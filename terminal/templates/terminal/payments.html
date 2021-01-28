@@ -1,0 +1,54 @@
+{% extends "terminal/base.html" %}
+{% block content %}
+<div class="container-xl">
+<table class="table table-hover">
+    <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Номер Аккаунта</th>
+        <th scope="col">Дата создания</th>
+        <th scope="col">Сервис</th>
+        <th scope="col">ID Платежа</th>
+        <th scope="col">Дата оплаты</th>
+        <th scope="col">Сумма</th>
+        <th scope="col">Статус</th>
+
+        <th></th>
+    </tr>
+ {% for row in payments %}
+ {% if row.status == 0 %}
+<tr>
+        <td>{{ row.id }}</td>
+        <td>{{ row.accountno }}</td>
+        <td>{{ row.create_date|date:"d.m.Y" }}</td>
+        <td>{{ row.service_id }}</td>
+        <td>{{ row.pay_id }}</td>
+        <td>{{ row.pay_date }}</td>
+        <td>{{ row.sum }}</td>
+        <td>{{ row.status }}</td>
+
+        <td><a class="btn btn-primary" href="{% url 'make-income-operation' row.pk %}">pay</a></td>
+    </tr>
+ {% endif %}
+ {% endfor %}
+</table>
+    {% if is_paginated %}
+
+    {% if page_obj.has_previous %}
+        <a class="btn btn-outline-info mb-4" href="?page=1">Начало</a>
+    {% endif %}
+    {% for num in page_obj.paginator.page_range %}
+
+        {% if page_obj.number == num %}
+            <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+
+        {% endif %}
+
+    {% endfor %}
+    {% if page_obj.has_next %}
+        <a class="btn btn-outline-info mb-4" href="?page={{page_obj.paginator.num_pages}}">Последняя</a>
+    {% endif %}
+    {% endif %}
+</div>
+{% endblock content %}
